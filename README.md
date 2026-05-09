@@ -93,6 +93,5 @@ pytest
 |---|---|
 | [pandas](https://pandas.pydata.org/) | Data transformation |
 | [sweetviz](https://github.com/fbdesignpro/sweetviz) | Automated EDA reports |
-| [pandera](https://pandera.readthedocs.io/) | Schema validation |
 | [pytest](https://pytest.org/) | Unit testing |
 | [python-dotenv](https://github.com/theskumar/python-dotenv) | Environment configuration |

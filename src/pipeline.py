@@ -7,13 +7,9 @@ from cleaning import clean
 from logging_config import configure_logging
 from profiling import profile
 
-configure_logging()
-
 logger = logging.getLogger(__name__)
 
 DATA_PATH = Path(__file__).parent.parent / "data" / "raw" / "dirty_cafe_sales.csv"
-
-raw_df = pd.read_csv(DATA_PATH)
 
 
 def pipeline(df: pd.DataFrame) -> pd.DataFrame:
@@ -29,4 +25,7 @@ def pipeline(df: pd.DataFrame) -> pd.DataFrame:
     logger.info("Pipelined finished succesfully.")
 
 
-pipeline(raw_df)
+if __name__ == "__main__":
+    configure_logging()
+    raw_df = pd.read_csv(DATA_PATH)
+    pipeline(raw_df)

@@ -6,7 +6,6 @@ sweetviz==2.3.3
 
 # pipeline
 pandas==3.0.2
-pandera==0.31.1
 
 # testing
 pytest==9.0.3
