@@ -1,6 +1,9 @@
 # configuration
 python-dotenv==1.2.2
 
+# profiling
+sweetviz==2.3.3
+
 # pipeline
 pandas==3.0.2
 pandera==0.31.1
