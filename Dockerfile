@@ -7,8 +7,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ ./src/
 COPY tests/ ./tests/
-COPY data/raw/ ./data/raw/
-
-RUN mkdir -p data/processed logs reports
+RUN mkdir -p data/raw data/processed logs reports
 
 CMD ["python", "src/pipeline.py"]

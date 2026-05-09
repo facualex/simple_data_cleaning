@@ -72,8 +72,10 @@ Place `dirty_cafe_sales.csv` in `data/raw/`.
 **3. Run the pipeline**
 
 ```bash
-python src/pipeline.py
+docker run -v $(pwd)/data:/app/data cafe-pipeline
 ```
+
+> The raw dataset is not included in the image. Before running the container, make sure `data/raw/dirty_cafe_sales.csv` exists locally — the volume mount makes it available inside the container.
 
 The cleaned data is logged, and two HTML reports are written to `reports/`:
 - `first_profile.html` — profile of the raw input
