@@ -57,17 +57,15 @@ Before and after the cleaning step, the pipeline generates a [sweetviz](https://
 
 ## Running It
 
-**1. Install dependencies**
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-**2. Add the raw dataset**
+**1. Add the raw dataset**
 
 Place `dirty_cafe_sales.csv` in `data/raw/`.
+
+**2. Build the image**
+
+```bash
+docker build -t cafe-pipeline .
+```
 
 **3. Run the pipeline**
 
@@ -75,7 +73,7 @@ Place `dirty_cafe_sales.csv` in `data/raw/`.
 docker run -v $(pwd)/data:/app/data cafe-pipeline
 ```
 
-> The raw dataset is not included in the image. Before running the container, make sure `data/raw/dirty_cafe_sales.csv` exists locally — the volume mount makes it available inside the container.
+> The raw dataset is not included in the image — the volume mount makes your local `data/raw/` available inside the container. Outputs are written back to your local `data/processed/`.
 
 The cleaned data is logged, and two HTML reports are written to `reports/`:
 - `first_profile.html` — profile of the raw input
@@ -84,7 +82,7 @@ The cleaned data is logged, and two HTML reports are written to `reports/`:
 **4. Run tests**
 
 ```bash
-pytest
+docker run --entrypoint pytest cafe-pipeline
 ```
 
 ---
