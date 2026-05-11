@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone
 from typing import List, Tuple
 
 import pandas as pd
@@ -172,7 +173,7 @@ def remove_nulls_from_critical_fields(
 def clean(df: pd.DataFrame) -> Tuple[pd.DataFrame, dict]:
     """Run the full cleaning pipeline: sentinel mapping, type casting, total derivation, and null removal."""
     cleaning_report = {
-        "generated_at": 0,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
         "rows_before": len(df),
         "rows_after": 0,
         "rows_dropped": 0,
