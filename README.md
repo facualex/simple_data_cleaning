@@ -19,7 +19,7 @@ The raw dataset (`dirty_cafe_sales.csv`) simulates the kind of data quality issu
 
 ## Pipeline
 
-The cleaning pipeline (`src/cleaning.py`) is built as a chain of composable `DataFrame → DataFrame` steps:
+Each step is a composable `DataFrame → (DataFrame, summary)` transformation. The summaries are aggregated into a JSON cleaning report written at the end of every run.
 
 ```
 raw CSV
@@ -27,10 +27,23 @@ raw CSV
   → type_casting             cast Quantity (Int64), prices (float64), dates (datetime64)
   → derive_total_spent       recompute Total Spent = Quantity × Price Per Unit where possible
   → remove_nulls_from_critical_fields   drop rows still missing Item, Quantity, Price Per Unit, or Total Spent
-  → clean DataFrame
+  → clean DataFrame + cleaning report (JSON)
 ```
 
 Before and after the cleaning step, the pipeline generates a [sweetviz](https://github.com/fbdesignpro/sweetviz) HTML report so the impact of each decision is visible and reproducible.
+
+---
+
+## Outputs
+
+Every run produces four artifacts:
+
+| Path | Description |
+|---|---|
+| `logs/YYYYMMDD/<timestamp>.log` | Structured run log (console-mirrored) |
+| `logs/YYYYMMDD/<timestamp>.json` | Cleaning report — row counts, per-step summaries, `generated_at` timestamp |
+| `reports/first_profile.html` | sweetviz EDA of the raw input |
+| `reports/clean_profile.html` | sweetviz EDA after cleaning |
 
 ---
 
@@ -41,11 +54,14 @@ Before and after the cleaning step, the pipeline generates a [sweetviz](https://
 ├── data/
 │   ├── raw/                  # Source data (not tracked by git)
 │   └── processed/            # Output data (not tracked by git)
-├── logs/                     # Timestamped run logs, one file per execution
+├── logs/                     # Date-organized run logs and cleaning reports
+│   └── YYYYMMDD/
+│       ├── HHMMss-<microseconds>.log
+│       └── HHMMss-<microseconds>.json
 ├── reports/                  # sweetviz HTML reports (before/after cleaning)
 ├── src/
-│   ├── pipeline.py           # Entry point — orchestrates profiling and cleaning
-│   ├── cleaning.py           # Cleaning steps as pure DataFrame transformations
+│   ├── pipeline.py           # Entry point — orchestrates profiling, cleaning, and reporting
+│   ├── cleaning.py           # Cleaning steps as pure (DataFrame, summary) transformations
 │   ├── profiling.py          # sweetviz report generation
 │   └── logging_config.py     # Structured logging setup (console + file handlers)
 ├── tests/
@@ -75,9 +91,11 @@ docker run -v $(pwd)/data:/app/data cafe-pipeline
 
 > The raw dataset is not included in the image — the volume mount makes your local `data/raw/` available inside the container. Outputs are written back to your local `data/processed/`.
 
-The cleaned data is logged, and two HTML reports are written to `reports/`:
-- `first_profile.html` — profile of the raw input
-- `clean_profile.html` — profile after cleaning
+To override the log level:
+
+```bash
+docker run -e LOG_LEVEL=DEBUG -v $(pwd)/data:/app/data cafe-pipeline
+```
 
 **4. Run tests**
 
