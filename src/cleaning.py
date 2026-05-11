@@ -16,9 +16,9 @@ def map_sentinels_to_null(
     df_copy = df_copy.replace(sentinels, pd.NA)
 
     affected_columns = {
-        col: int((df[col] != df_copy[col]).sum())
+        col: int((df[col].notna() & df_copy[col].isna()).sum())
         for col in df.columns
-        if (df[col] != df_copy[col]).any()
+        if (df[col].notna() & df_copy[col].isna()).any()
     }
 
     summary = {
